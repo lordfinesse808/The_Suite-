@@ -1,0 +1,26 @@
+{
+  "name": "04-pidgin-yaba",
+  "description": "Pure Pidgin, replies stay in Pidgin",
+  "profile_name": "Emeka",
+  "phone": "+2348095550004",
+  "turns": [
+    {
+      "text": "How far, abeg I dey find mini flat for Yaba. My budget na 1.8m every year"
+    },
+    {
+      "text": "Na rent o. I wan pack in January"
+    }
+  ],
+  "expect": {
+    "needs": {
+      "purpose": "rent",
+      "budget_max": 1800000,
+      "areas": [
+        "Yaba"
+      ]
+    },
+    "language": "pcm",
+    "stage": "shortlisted",
+    "reply_language": "pcm"
+  }
+}

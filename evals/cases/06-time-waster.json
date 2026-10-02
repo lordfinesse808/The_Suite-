@@ -1,0 +1,27 @@
+{
+  "name": "06-time-waster",
+  "description": "Vague lead who never gives details",
+  "profile_name": "",
+  "phone": "+2348095550006",
+  "turns": [
+    {
+      "text": "hi"
+    },
+    {
+      "text": "just checking"
+    },
+    {
+      "text": "not sure yet"
+    },
+    {
+      "text": "ok"
+    }
+  ],
+  "expect": {
+    "stage": [
+      "qualifying"
+    ],
+    "temperature": "cold",
+    "max_matches": 0
+  }
+}

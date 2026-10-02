@@ -1,0 +1,22 @@
+{
+  "name": "09-human-takeover",
+  "description": "Asks for a person mid-qualification",
+  "profile_name": "Kunle",
+  "phone": "+2348095550009",
+  "turns": [
+    {
+      "text": "Hi, looking to buy off-plan 3 bed in Lekki"
+    },
+    {
+      "text": "Can I talk to a real person please?"
+    },
+    {
+      "text": "Hello?"
+    }
+  ],
+  "expect": {
+    "needs_human": true,
+    "ai_paused": true,
+    "silent_last_turn": true
+  }
+}

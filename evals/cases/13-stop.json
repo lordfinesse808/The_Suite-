@@ -1,0 +1,21 @@
+{
+  "name": "13-stop",
+  "description": "Opts out mid-chat and is never messaged again",
+  "profile_name": "Uche",
+  "phone": "+2348095550013",
+  "turns": [
+    {
+      "text": "Hello, looking for a flat in Yaba"
+    },
+    {
+      "text": "STOP"
+    },
+    {
+      "text": "hello?"
+    }
+  ],
+  "expect": {
+    "opted_out": true,
+    "silent_last_turn": true
+  }
+}

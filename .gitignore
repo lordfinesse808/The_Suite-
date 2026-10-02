@@ -1,0 +1,12 @@
+node_modules/
+.next/
+.data/
+.env
+.env.local
+*.tsbuildinfo
+next-env.d.ts
+playwright-report/
+test-results/
+public/uploads/*
+!public/uploads/.gitkeep
+coverage/

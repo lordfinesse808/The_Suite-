@@ -1,0 +1,24 @@
+{
+  "name": "02-abuja-sale",
+  "description": "Abuja sale with mortgage",
+  "profile_name": "Musa",
+  "phone": "+2348095550002",
+  "turns": [
+    {
+      "text": "Good morning. I want to buy a 4 bedroom duplex in Gwarinpa, budget 110m, mortgage approved."
+    }
+  ],
+  "expect": {
+    "needs": {
+      "purpose": "sale",
+      "budget_max": 110000000,
+      "bedrooms_min": 4,
+      "areas": [
+        "Gwarinpa"
+      ],
+      "financing": "mortgage"
+    },
+    "stage": "shortlisted",
+    "min_matches": 1
+  }
+}

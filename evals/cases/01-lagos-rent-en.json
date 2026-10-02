@@ -1,0 +1,30 @@
+{
+  "name": "01-lagos-rent-en",
+  "description": "Lagos rent, English, full flow to a booked viewing",
+  "profile_name": "Chiamaka",
+  "phone": "+2348095550001",
+  "turns": [
+    {
+      "text": "Good evening. I saw the 3-bed in Lekki on your Instagram. Is it still available?"
+    },
+    {
+      "text": "Rent. My budget is around 6m a year, Lekki Phase 1 or Ikate. Moving by December. My name is Chiamaka Eze"
+    },
+    {
+      "text": "The Ikate one. Can I see it this weekend?"
+    },
+    {
+      "reply": "slot:1"
+    }
+  ],
+  "expect": {
+    "needs": {
+      "purpose": "rent",
+      "budget_max": 6000000,
+      "bedrooms_min": 3
+    },
+    "stage": "viewing_booked",
+    "viewing": true,
+    "language": "en-NG"
+  }
+}

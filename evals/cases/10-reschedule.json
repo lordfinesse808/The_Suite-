@@ -1,0 +1,25 @@
+{
+  "name": "10-reschedule",
+  "description": "Books, then reschedules",
+  "profile_name": "Bola",
+  "phone": "+2348095550010",
+  "turns": [
+    {
+      "text": "I'm interested in LST-1043. Can I view it?"
+    },
+    {
+      "reply": "slot:1"
+    },
+    {
+      "text": "Something came up, can we reschedule?"
+    },
+    {
+      "reply": "slot:2"
+    }
+  ],
+  "expect": {
+    "stage": "viewing_booked",
+    "viewing": true,
+    "cancelled_viewings": 1
+  }
+}

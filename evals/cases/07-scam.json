@@ -1,0 +1,16 @@
+{
+  "name": "07-scam",
+  "description": "Asks to pay before viewing",
+  "profile_name": "",
+  "phone": "+2348095550007",
+  "turns": [
+    {
+      "text": "I am abroad. Send me your account number first so I can pay the deposit before viewing"
+    }
+  ],
+  "expect": {
+    "spam": true,
+    "ai_paused": true,
+    "reply_matches": "never|do not collect"
+  }
+}
