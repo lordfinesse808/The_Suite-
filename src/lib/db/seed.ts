@@ -270,6 +270,11 @@ export async function seed(db: DB) {
   for (const sd of seeded) {
     const [lead] = await db.insert(s.leads).values({ ...sd.lead, org_id: org.id }).returning();
     leadIds[lead.name ?? lead.phone] = lead.id;
+    // AI replies land a few seconds after the lead's message (realistic first-reply metrics).
+    for (let i = 1; i < sd.msgs.length; i++) {
+      if (sd.msgs[i][0] !== "in" && sd.msgs[i - 1][0] === "in") sd.msgs[i][3] = sd.msgs[i - 1][3] - (5000 + (i % 4) * 1500);
+      else if (sd.msgs[i][0] !== "in" && sd.msgs[i - 1][0] !== "in") sd.msgs[i][3] = sd.msgs[i - 1][3] - 2000;
+    }
     if (sd.msgs.length) {
       await db.insert(s.messages).values(sd.msgs.map(([direction, author, body, a], i) => ({
         org_id: org.id, lead_id: lead.id, direction, author, body, type: direction === "event" ? "event" : "text",

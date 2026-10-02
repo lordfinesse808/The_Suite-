@@ -11,7 +11,7 @@ import { sendMessage } from "../messaging/send";
 import { payloadText, type OutPayload } from "../channels/whatsapp/types";
 import { llm, BudgetExceededError, type Move, type ReplyPlan, type HistoryItem, type AgentName, type AskField } from "../llm";
 import { composeReply } from "../llm/mock";
-import { mergeNeeds, type Understanding } from "./understand";
+import { mergeNeeds, pidginHits, type Understanding } from "./understand";
 import { checkReply, sanitize, hasConsent } from "./guardrails";
 import { scoreLead, missingFields, isQualified } from "./scoring";
 import { searchListings, countFitting, needsSummary, type Ranked } from "./matchmaker";
@@ -170,11 +170,14 @@ async function handle(orgId: string, leadId: string, msg: s.Message) {
   await db.update(s.messages).set({ payload: { ...msg.payload, understanding: u } }).where(eq(s.messages.id, msg.id));
 
   // Language: follow the lead (keep the last English/Pidgin choice for "other").
-  if (u.language === "pcm" || u.language === "en-NG") {
-    if (msg.type === "text" && msg.body.trim().split(/\s+/).length >= 2 && u.language !== t.lead.language) {
+  if ((u.language === "pcm" || u.language === "en-NG") && msg.type === "text" && u.language !== t.lead.language) {
+    const words = msg.body.trim().split(/\s+/).length;
+    // Switch to Pidgin on any clear Pidgin message; back to English only on a clearly English one.
+    const switchTo = u.language === "pcm" ? words >= 2 : words >= 5 && pidginHits(msg.body) === 0;
+    if (switchTo) {
       t.lead = await updateLead(orgId, leadId, { language: u.language });
+      t.language = u.language;
     }
-    if (msg.type === "text" && msg.body.trim().split(/\s+/).length >= 2) t.language = u.language;
   }
 
   // 1. Opt-out always works, even when a human has taken over.
@@ -202,7 +205,8 @@ async function handle(orgId: string, leadId: string, msg: s.Message) {
   const pickOnly = (u.intent === "pick_listing" || u.intent === "book_viewing" || u.intent === "pick_slot") && !!(u.pick_area || u.pick_rank);
   const newNeeds = pickOnly ? mergeNeeds(t.lead.needs, { ...u.needs, areas: undefined }) : mergeNeeds(t.lead.needs, u.needs);
   const patch: Partial<typeof s.leads.$inferInsert> = { needs: newNeeds };
-  if (u.contact.name && !t.lead.name) patch.name = u.contact.name;
+  // A name the lead states beats the WhatsApp profile name ("Chiamaka" -> "Chiamaka Eze").
+  if (u.contact.name && u.contact.name !== t.lead.name) patch.name = u.contact.name;
   if (u.contact.email && !t.lead.email) patch.email = u.contact.email;
   t.lead = await updateLead(orgId, leadId, patch);
 
@@ -244,7 +248,7 @@ async function handle(orgId: string, leadId: string, msg: s.Message) {
 
   // 5. Listing reference ("Hi, I'm interested in LST-1042")
   let refListing: Listing | null = null;
-  if (u.listing_ref) {
+  if (u.listing_ref && !p.reply_id && u.intent !== "pick_listing") {
     refListing = await getListingByRef(orgId, u.listing_ref);
     if (refListing && !t.lead.listing_id) {
       const n = { ...t.lead.needs };
@@ -316,7 +320,7 @@ async function rescore(t: Turn) {
   const db = await getDb();
   const inbound = await db.select({ id: s.messages.id }).from(s.messages).where(and(eq(s.messages.lead_id, t.lead.id), eq(s.messages.direction, "in")));
   const fitting = await countFitting(t.org.id, t.lead.needs);
-  const r = scoreLead({ needs: t.lead.needs, name: t.lead.name, inboundCount: inbound.length, fromListing: !!t.lead.listing_id, fittingListings: fitting, spam: t.lead.spam, ref: now() });
+  const r = scoreLead({ needs: t.lead.needs, name: t.lead.name, inboundCount: inbound.length, fromListing: !!t.lead.source.listing_ref, fittingListings: fitting, spam: t.lead.spam, ref: now() });
   t.lead = await updateLead(t.org.id, t.lead.id, { score: r.score, temperature: r.temperature, score_breakdown: r.breakdown });
 }
 
@@ -379,7 +383,8 @@ async function qualify(t: Turn, u: Understanding, refListing: Listing | null) {
   const listing = refListing ?? (u.questions.length ? await focusListing(t) : null);
   if (listing && (u.listing_ref || u.questions.includes("availability"))) {
     moves.push({ k: "ack_listing", title: shortTitle(listing), available: listing.status === "available" && !listing.hidden });
-  } else if (u.questions.includes("availability") && !listing) {
+  } else if (u.questions.includes("availability") && !listing && !Object.keys(t.lead.needs).length) {
+    // Without a listing or any needs we cannot check; the shortlist will show what is available.
     moves.push({ k: "answer", topic: "unknown" });
   }
   if (listing) allowed.push(...listingAmounts(listing));
@@ -468,6 +473,12 @@ async function sendMatches(t: Turn, u: Understanding, lead: Move[], allowed: num
     ],
   }, "match_list");
   await saveCtx(t, { shortlist: picks.map((p) => p.listing.id), excluded: [...shown, ...picks.map((p) => p.listing.id)], offered_slots: [] });
+  // Route by area: the agent who owns the best match takes the lead.
+  const owner = picks[0]?.listing.agent_id;
+  if (owner && owner !== t.lead.assigned_agent_id && !shown.length) {
+    t.lead = await updateLead(t.org.id, t.lead.id, { assigned_agent_id: owner });
+    t.agentName = ((await getUserName(owner)) ?? t.agentName).split(" ")[0];
+  }
   if (t.lead.stage === "qualified" || t.lead.stage === "qualifying") t.lead = await updateLead(t.org.id, t.lead.id, { stage: "shortlisted" });
   await logEvent(t.org.id, t.lead.id, `Matchmaker · ${picks.length} homes sent`, { refs: picks.map((p) => p.listing.ref_code) });
 }

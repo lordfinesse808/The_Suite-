@@ -60,7 +60,7 @@ export function initials(name: string | null | undefined, phone?: string) {
     const parts = name.trim().split(/\s+/);
     return ((parts[0]?.[0] ?? "") + (parts[1]?.[0] ?? "")).toUpperCase();
   }
-  return phone ? "+" + phone.replace(/\D/g, "").slice(-1) : "?";
+  return phone ? "+" + phone.replace(/\D/g, "").slice(0, 1) : "?";
 }
 
 export function maskPhone(phone: string) {

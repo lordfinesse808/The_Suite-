@@ -55,6 +55,11 @@ function count(t: string, words: string[]) {
   return words.filter((w) => new RegExp(`(^|[^a-zà-ỹ])${w.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}([^a-zà-ỹ]|$)`, "i").test(t)).length;
 }
 
+/** Number of Pidgin markers in a message (used to keep a Pidgin chat in Pidgin). */
+export function pidginHits(text: string) {
+  return count(text.toLowerCase(), PIDGIN);
+}
+
 export function detectLanguage(text: string): { language: "en-NG" | "pcm" | "other"; other?: string } {
   const t = text.toLowerCase();
   const yo = count(t, YORUBA) + (/[ẹọṣ]/.test(t) ? 2 : 0);
@@ -275,7 +280,7 @@ export function understandRules(text: string, opts: { ref: Date; replyId?: strin
   // Contact
   const name = extractName(raw);
   if (name) u.contact.name = name;
-  const email = raw.match(/[\w.+-]+@[\w-]+\.[\w.-]+/);
+  const email = raw.match(/[\w.+-]+@[\w-]+(?:\.[\w-]+)+/);
   if (email) u.contact.email = email[0];
 
   const ref = raw.match(/\bLST-?\s?(\d{3,5})\b/i);

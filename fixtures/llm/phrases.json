@@ -82,7 +82,7 @@
     "consent": [
       "We go keep your details to help your search, and you fit reply STOP any time.",
       "We dey save your details only to help you find house. Reply STOP any time if you wan stop.",
-      "Your details go dey with us only for this search, and you fit reply STOP any time."
+      "We go keep your details only for this search, and you fit reply STOP any time."
     ],
     "ack_listing_available": ["Yes, the {title} still dey available.", "The {title} still dey.", "The {title} never go, e still dey available."],
     "ack_listing_taken": ["The {title} don go, but I fit show you the ones wey resemble am.", "Person don take the {title}. Make I find you the ones wey near am."],
