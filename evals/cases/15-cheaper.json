@@ -1,0 +1,18 @@
+{
+  "name": "15-cheaper",
+  "description": "Asks for cheaper options after the shortlist",
+  "profile_name": "Ngozi",
+  "phone": "+2348095550015",
+  "turns": [
+    {
+      "text": "Rent, 3 bed in Lekki Phase 1, 6m a year, moving December"
+    },
+    {
+      "text": "Do you have something cheaper?"
+    }
+  ],
+  "expect": {
+    "stage": "shortlisted",
+    "min_matches": 4
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "name": "03-shortlet-vi",
+  "description": "Short-let in Victoria Island",
+  "profile_name": "Tare",
+  "phone": "+2348095550003",
+  "turns": [
+    {
+      "text": "Need a 2-bed short-let in VI for 3 nights, max 90k per night"
+    }
+  ],
+  "expect": {
+    "needs": {
+      "purpose": "shortlet",
+      "budget_max": 90000,
+      "nights": 3,
+      "areas": [
+        "Victoria Island"
+      ]
+    },
+    "stage": "shortlisted",
+    "min_matches": 1
+  }
+}

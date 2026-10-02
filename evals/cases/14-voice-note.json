@@ -1,0 +1,25 @@
+{
+  "name": "14-voice-note",
+  "description": "Sends a voice note first",
+  "profile_name": "Femi",
+  "phone": "+2348095550014",
+  "turns": [
+    {
+      "audio": true
+    },
+    {
+      "text": "Sorry. Rent, 3 bed flat in Gbagada, 3.5m a year, moving in November"
+    }
+  ],
+  "expect": {
+    "needs": {
+      "purpose": "rent",
+      "budget_max": 3500000,
+      "areas": [
+        "Gbagada"
+      ]
+    },
+    "stage": "shortlisted",
+    "first_reply_matches": "voice note"
+  }
+}

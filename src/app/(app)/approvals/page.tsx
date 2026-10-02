@@ -65,7 +65,14 @@ export default async function ApprovalsPage({ searchParams }: { searchParams: Pr
         </Link>
       )}
       {pending.length === 0 ? (
-        <Empty>No drafts waiting. When a lead goes quiet for 24 hours, the Follow-up writer drafts a message here for you to approve.</Empty>
+        <>
+          <Empty>No drafts waiting. When a lead goes quiet for 24 hours, the Follow-up writer drafts a message here for you to approve.</Empty>
+          {recent.length > 0 && (
+            <ul className="mt-6 space-y-1 text-sm text-ink-2">
+              {recent.map(({ d: dr, l }) => <li key={dr.id} className="flex justify-between px-4"><span>{l.name ?? l.phone}</span><span className="capitalize">{dr.status} · {relTime(dr.sent_at ?? dr.created_at, now())}</span></li>)}
+            </ul>
+          )}
+        </>
       ) : (
         <div className="grid gap-6 lg:grid-cols-[360px_1fr]">
           <div>

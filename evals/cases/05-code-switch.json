@@ -1,0 +1,26 @@
+{
+  "name": "05-code-switch",
+  "description": "English and Pidgin mixed",
+  "profile_name": "Ada",
+  "phone": "+2348095550005",
+  "turns": [
+    {
+      "text": "Hello, abeg I need 2 bedroom flat for Ikeja, budget na 2.5m per year"
+    },
+    {
+      "text": "I wan rent am, moving next month"
+    }
+  ],
+  "expect": {
+    "needs": {
+      "purpose": "rent",
+      "budget_max": 2500000,
+      "bedrooms_min": 2,
+      "areas": [
+        "Ikeja"
+      ]
+    },
+    "language": "pcm",
+    "stage": "shortlisted"
+  }
+}

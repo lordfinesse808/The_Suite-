@@ -439,7 +439,7 @@ async function sendMatches(t: Turn, u: Understanding, lead: Move[], allowed: num
   }
   const summary = needsSummary(n, t.language);
   let picks = results.slice(0, 5).filter((r, i) => i < 3 || r.score >= 70);
-  let moves: Move[] = [...lead];
+  const moves: Move[] = [...lead];
   if (!picks.length) {
     const relaxed = await searchListings(t.org.id, n, { relaxed: true, exclude: shown });
     picks = relaxed.slice(0, 3);
@@ -460,7 +460,10 @@ async function sendMatches(t: Turn, u: Understanding, lead: Move[], allowed: num
   const sentAt = now();
   for (const [i, p] of picks.entries()) {
     const l = p.listing;
-    await send(t, "matchmaker", { type: "image", url: photoUrl(l), caption: `${l.title}\n${naira(l.price_amount, l.price_period)}\n${p.reason}`, listing_ref: l.ref_code }, "match");
+    const caption = `${l.title}\n${naira(l.price_amount, l.price_period)}\n${p.reason}`;
+    // WhatsApp only accepts JPEG/PNG images; without a real photo, send the card as text.
+    const payload: OutPayload = l.photos.length || env().MOCK_WHATSAPP ? { type: "image", url: photoUrl(l), caption, listing_ref: l.ref_code } : { type: "text", body: caption };
+    await send(t, "matchmaker", payload, "match");
     await db.insert(s.matches).values({ org_id: t.org.id, lead_id: t.lead.id, listing_id: l.id, rank: shown.length + i + 1, score: p.score, reason: p.reason, sent_at: sentAt, created_at: sentAt });
   }
   const outro = await write(t, "matchmaker", [{ k: "matches_outro" }], []);

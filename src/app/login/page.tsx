@@ -4,6 +4,7 @@ import { LoginForm } from "../auth-forms";
 import { env } from "@/lib/env";
 
 export const metadata = { title: "Sign in" };
+export const dynamic = "force-dynamic";
 
 export default function LoginPage() {
   const demo = env().MOCK_WHATSAPP;

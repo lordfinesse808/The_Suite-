@@ -1,0 +1,16 @@
+{
+  "name": "11-yoruba",
+  "description": "Lead writes in Yoruba: handed to a human",
+  "profile_name": "Kemi",
+  "phone": "+2348095550011",
+  "turns": [
+    {
+      "text": "Ẹ kú àárọ̀. Mo fẹ́ ilé ní Lekki, ẹ jọ̀wọ́"
+    }
+  ],
+  "expect": {
+    "needs_human": true,
+    "ai_paused": true,
+    "reply_matches": "colleague"
+  }
+}

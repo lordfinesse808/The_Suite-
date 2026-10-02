@@ -82,7 +82,7 @@ export async function deleteLead(leadId: string) {
   if (!lead) return;
   await db.delete(s.leads).where(and(eq(s.leads.org_id, sess.orgId), eq(s.leads.id, leadId)));
   await db.delete(s.jobs).where(and(eq(s.jobs.org_id, sess.orgId), sql`${s.jobs.payload}->>'lead_id' = ${leadId}`));
-  await audit(sess.orgId, `user:${sess.userId}`, "lead.deleted", "lead", leadId, { phone_hash: lead.phone.slice(-4) });
+  await audit(sess.orgId, `user:${sess.userId}`, "lead.deleted", "lead", leadId, {});
   redirect("/inbox");
 }
 
